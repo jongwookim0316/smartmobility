@@ -1,90 +1,154 @@
 import streamlit as st
-from PIL import Image
 import pandas as pd 
 import matplotlib.pyplot as plt
-
-    # 화면 분할
-
-add_selectbox = st.sidebar.selectbox(
-    "목차",
-    ("bmi", "gapminder", "my page")
-)
-
-if add_selectbox == 'bmi':
+from PIL import Image
+import numpy as np
+import datetime
 
 
-        # 체질량 지수 구하기
+
+st.write('# :blue[GTTG]')               # 제목 출력(파란색)
+st.write(':blue[Go To The Gym]')        # 부제목 출력(파란색)
+        
+        
+        # 화면 분할
+
+tab1, tab2, tab3 = st.tabs(["루틴", "헬스장", "My Record"])         # table 분할 
+
+        
+        # 루틴 페이지
+
+with tab1:
+    st.header("_루틴_")                         # 헤드라인
+    image = Image.open('루틴.jpg')              # 사진첨부
+    st.image(image)                             # 이미지 출력  
+
+    option = st.selectbox(
+        '운동루틴', 
+        ('선택','5X5 운동일지_종우.ver', '531 운동일지_종우.ver', 'PHUL 운동일지_종우.ver'))       # selectbox 
+
+    
+    if option == '5X5 운동일지_종우.ver':   # option = '5X5 운동일지_종우.ver' => '5X5 운동일지_종우.ver'파일다운 
+
+        st.write(':green[5X5 운동일지_종우.ver]')   # '5X5 운동일지_종우.ver' 텍스트 출력
+        st.write('스트렝스 훈련 프로그램으로써 주 3회 정도로 하며')   #  간략한 설명 출력
+        st.write('4대 운동인 오버헤드프레스, 벤치프레스, 스쿼트, 데드리프트를 중심으로 하는 운동이다.')       #  간략한 설명 출력
+        st.write('main 종목은 5개씩 5set를 하는것이 특징이다.')     #  간략한 설명 출력
 
 
-    def bmi_range(bmi):
-        if bmi < 20:
-            st.warning("저체중입니다")
-        elif (bmi >= 20) and (bmi <= 23):
-            st.success("정상체중입니다")
-        elif (bmi > 23) and (bmi<=25):
-            st.warning("과체중입니다")
-        else:
-            st.error("비만입니다")
+            #운동일지 다운버튼 생성 
+
+        df = pd.read_csv('5x5 운동일지_종우.ver.csv')           # csv 파일 불러옴
+
+        @st.cache_data
+        def convert_df(df):
+        # IMPORTANT: Cache the conversion to prevent computation on every rerun
+            return df.to_csv().encode('utf-8')
+
+        csv = convert_df(df)
+
+        st.download_button(
+            label=":red[Download : 5x5 운동일지]",          # 버튼이름
+            data=csv,                                       # 파일 csv 형태
+            file_name='5x5 운동일지_종우.ver.csv',             # 파일이름
+            mime='text/csv',
+        )
+
+       
+    elif option == '531 운동일지_종우.ver':      # option = '531 운동일지_종우.ver' => '531 운동일지_종우.ver'파일다운 
+
+        st.write(':green[531 운동일지_종우.ver]')   # '531 운동일지_종우.ver' 텍스트 출력
+        st.write('스트렝스 훈련 프로그램으로써 주 4회 정도로 하며')   #  간략한 설명 출력
+        st.write('4대 운동인 오버헤드프레스, 벤치프레스, 스쿼트, 데드리프트를 중심으로 하는 운동이다.')       #  간략한 설명 출력
+        st.write('main 종목 + 보조운동으로 이루어지며 main운동은 5회 -> 3회 -> 1회 순으로 돌아간다.')     #  간략한 설명 출력
+
+        df = pd.read_csv('531 운동일지_종우.ver.csv')           # csv 파일 불러옴
+
+             #운동일지 다운버튼 생성 
+
+        @st.cache_data
+        def convert_df(df):
+        # IMPORTANT: Cache the conversion to prevent computation on every rerun
+            return df.to_csv().encode('utf-8')
+
+        csv = convert_df(df)
+
+        st.download_button(
+            label=":red[Download : 531 운동일지]",          # 버튼이름
+            data=csv,                                       # 파일 csv 형태
+            file_name='531 운동일지_종우.ver.csv',             # 파일이름 
+            mime='text/csv',
+        )
 
 
-    st.write('# 체질량 지수 계산기')
-    st.write('체질량 지수란 \n인간의 비만도를 나타내는 지수로, 체중과 키의 관계로 계산된다.')
+    elif option == 'PHUL 운동일지_종우.ver':      # option = '531 운동일지_종우.ver' => '531 운동일지_종우.ver'파일다운 
 
-    height = st.number_input('키 입력: (cm)',100,200,170,1)     
-    st.write('키: ',height,'cm')
+        st.write(':green[PHUL 운동일지_종우.ver]')   # '5X5 운동일지_종우.ver' 텍스트 출력
+        st.write('스트렝스 + 볼륨 훈련 프로그램으로써 주 4회 정도로 하며')   #  간략한 설명 출력
+        st.write('2분할로 상체,하체로 돌아간다.')       #  간략한 설명 출력
+        st.write('파워빌딩 프로그램이다.')     #  간략한 설명 출력
 
-    weight = st.number_input('몸무게 입력: (kg)',0,200,70,1)     
-    st.write('몸무게: ',weight,'kg')
+        df = pd.read_csv('PHUL 운동일지_종우.ver.csv')          # csv 파일 불러옴
 
-    bmi = weight/((height/100)**2)
+            #운동일지 다운버튼 생성 
 
-    if st.button('결과'):
-        st.write('bmi: ', round(bmi,2))
-        bmi_range(bmi)
+        @st.cache_data
+        def convert_df(df):
+        # IMPORTANT: Cache the conversion to prevent computation on every rerun
+            return df.to_csv().encode('utf-8')
 
-    image = Image.open('s.jpg.jpg')
+        csv = convert_df(df)
+
+        st.download_button(
+            label=":red[Download : PHUL 운동일지]",             # 버튼이름
+            data=csv,                                           # 파일 csv 형태
+            file_name='PHUL 운동일지_종우.ver.csv',                # 파일이름
+            mime='text/csv',
+        )
+
+
+         # 헬스장 페이지
+with tab2:
+    st.header("_헬스장_")                     # 헤드라인
+    image = Image.open('헬스장.jpg')        # 사진첨부
     st.image(image)
-  
-elif add_selectbox == 'gapminder':
+
+        # pd.dataframe()을 사용하여 좌표(위도와 경도)로 헬스장 위치 표현
+
+    df = pd.DataFrame(
+        [[35.155530, 129.059505],[35.154320, 129.064299],[35.154558, 129.056651],[35.153880, 129.059337],[35.147070, 129.067026],[35.152377, 129.060026]],                # 구글 지도에서 위치를 검색
+        columns=['lat', 'lon'])                    # 헬스장의 위치(위도, 경도)
+
+    st.map(df)                                      # 좌표를 지도에 표시 
 
 
-        # gapminder
+        # My Record 페이지
+
+with tab3:
+    st.header("_My Record_")                  # 헤드라인
+    image = Image.open('기록.png')             # 사진첨부
+    st.image(image)
 
 
-    st.write('# gapminder')
-
-    data = pd.read_csv('gapminder.csv')
-    st.write(data)
-
-    colors = []
-    for x in data['continent']:
-        if x == 'Asia':
-            colors.append('tomato')
-        elif x == 'Europe':
-            colors.append('blue')
-        elif x == 'Africa':
-            colors.append('olive') 
-        elif x == 'Americas':
-            colors.append('green')
-        else:
-            colors.append('orange')
-
-    data['colors']=colors
-
-    year = st.slider('년도 선택', 1952, 2007, 1952, 5)
-    st.write("year", year)
-
-    data = data[data['year']==year]
-
-    fig, ax = plt.subplots()
-    ax.scatter(data['gdpPercap'],data['lifeExp'],s=data['pop']*0.000001, color=data['colors'])
-    ax.set_title('how does gdp per capital relate to life expectancy')
-    ax.set_xlabel('gdp per capital')
-    ax.set_ylabel('life expectancy')
-    st.pyplot(fig)
+    d = st.date_input(
+            "# 운동한 날짜",
+            datetime.date(2023, 6, 7))
+    st.write('# Today is:', d)
 
 
+    agree = st.checkbox('complete!')              # check box 만듬
 
-else:
-    st.write('# my page')
+    if agree:                                   
+        st.write('Great!')                         # check box 체크시 텍스트 출력
 
+        work_t = st.slider('시간입력(분)', 0, 300, step=1)          # st.slider 을 사용하여 운동시간 표시
+        st.write("# 운동시간:", work_t,'분')                        # '분' 표시
+
+        work_k = st.slider('kcal', 0, 100000, step=1)          # st.slider 을 사용하여 운동시간 표시
+        st.write("# kcal:", work_k,'kcal')                      # 'kcal' 표시 
+
+        if work_t >= 60:                                       # 운동시간 60분 이상 'awesome!!' 출력
+            st.write('# awesome!!')
+        else:                                                  # 운동시간 60분 미만 '수고하셨습니다' 출력
+            st.write('# 수고하셨습니다:)')                      # 텍스트 출력 
+            
