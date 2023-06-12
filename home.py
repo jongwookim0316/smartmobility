@@ -131,9 +131,9 @@ with tab3:
 
 
     d = st.date_input(
-            "# 운동한 날짜",
-            datetime.date(2023, 6, 7))
-    st.write('# Today is:', d)
+            "# 운동한 날짜",                        
+            datetime.date(2023, 6, 7))              # 운동한 날짜 표시 
+    st.write('# Today is:', d)                  
 
 
     agree = st.checkbox('complete!')              # check box 만듬
@@ -149,6 +149,7 @@ with tab3:
 
         if work_t >= 60:                                       # 운동시간 60분 이상 'awesome!!' 출력
             st.write('# awesome!!')
+            st.balloons()                                      # 풍선 효과
         else:                                                  # 운동시간 60분 미만 '수고하셨습니다' 출력
             st.write('# 수고하셨습니다:)')                      # 텍스트 출력 
             
